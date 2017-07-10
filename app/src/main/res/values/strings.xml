@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MyApp2</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">practiceBitmap</string>
+    <string name="text_enter_angle">Enter the angle pointing to the north and press "ROTATE" to set the wind directions accordingly.</string>
 
 </resources>

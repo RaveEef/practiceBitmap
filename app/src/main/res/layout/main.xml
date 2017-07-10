@@ -1,11 +1,79 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center">
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:fillViewport="true"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 
-    <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:gravity="center"
+		android:id="@+id/layout_main"
+		android:focusable="true"
+		android:focusableInTouchMode="true">
 
-</LinearLayout>
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="8dp"
+			android:layout_marginRight="8dp"
+			android:text="@string/text_enter_angle"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="4dp"
+			android:textSize="16sp"
+			android:id="@+id/textview_intro"/>
+
+		<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:gravity="center">
+
+			<com.raveeef.practiceBitmap.MyBitmap
+				android:contentDescription="bitmap"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:id="@+id/my_bitmap"
+				android:padding="5dp"
+				android:layout_marginLeft="8dp"
+				android:layout_marginRight="8dp"/>
+
+		</FrameLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:layout_marginBottom="8dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginRight="8dp"
+			android:id="@+id/linear_layout_bottom">
+
+			<EditText
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:gravity="center"
+				android:id="@+id/edittext_degrees"
+				android:layout_marginRight="4dp"
+				android:hint="90°"
+				android:inputType="number|numberDecimal"/>
+
+			<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:id="@+id/button_rotate"
+				android:text="ROTATE"
+				android:background="#A4E2B7"
+				android:layout_marginLeft="4dp"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</ScrollView>
+
