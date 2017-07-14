@@ -14,12 +14,13 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int button_rotate=0x7f060005;
-        public static final int edittext_degrees=0x7f060004;
-        public static final int layout_main=0x7f060000;
-        public static final int linear_layout_bottom=0x7f060003;
-        public static final int my_bitmap=0x7f060002;
-        public static final int textview_intro=0x7f060001;
+        public static final int layout_main=0x7f060001;
+        public static final int linear_layout_bottom=0x7f060004;
+        public static final int mainScrollView=0x7f060000;
+        public static final int my_bitmap=0x7f060003;
+        public static final int my_edittext=0x7f060005;
+        public static final int mybutton_rotate=0x7f060006;
+        public static final int textview_intro=0x7f060002;
     }
     public static final class layout {
         public static final int main=0x7f030000;

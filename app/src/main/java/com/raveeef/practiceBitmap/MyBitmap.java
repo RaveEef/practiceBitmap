@@ -10,9 +10,9 @@ import android.util.*;
 import android.widget.*;
 
 public class MyBitmap extends View{
+	
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
 		int desiredWidth = 2000; 
 		int desiredHeight = 2000; 
 
@@ -43,133 +43,118 @@ public class MyBitmap extends View{
 	
 	public MyBitmap(Context context){
 		super(context);
+		init();
 	}
 
 	public MyBitmap(Context context, AttributeSet attrs){
 		super(context, attrs);
+		init();
 	}
 
 	public MyBitmap(Context context, AttributeSet attrs, int defaultStyle){
 		super(context, attrs, defaultStyle);
+		init();
 	}
 
-	Bitmap canvasBitmap, emptyCanvasBitmap, textBitmap, emptyTextBitmap;
-	Canvas textCanvas, canvasCanvas;;
-	Paint textPaint;
-	float left, right, top, bottom, r, currentAngle = -1;
-	public float angle;
-	public boolean doDraw;
-	int size, initialState;
-	
-	private void Tshow(CharSequence text, int repeat)
-	{
-		Context c = (MainActivity)getContext();
-		for(int i = 0; i < repeat; i++)
-			Toast.makeText(c, text, Toast.LENGTH_LONG).show();
-	}
+	Bitmap initialBitmap, rotatedBitmap;
+	Paint myPaint;
+	int size;
+	float left, right, top, bottom, r;
+	Integer currentState = null, doDraw;
+	Float currentAngle = new Float(0.0f);
+	public Float angle = new Float(0.0f);
+	boolean valuesSet = false, 
+			initialBitmapSet = false,
+			rotatedBitmapSet = false;
 	
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom)
-	{
-		super.onLayout(changed, left, top, right, bottom);
+	protected void onDraw(Canvas canvas){
+		if(!angle.equals(currentAngle))
+			rotatedBitmapSet = false;
+			
+		setContent();
+		canvas.drawBitmap(rotatedBitmap, this.getPaddingLeft(), this.getPaddingRight(), null);
+		super.onDraw(canvas);
+	}
+	
+	public void init(){
+		myPaint = new Paint();
+		myPaint.setAntiAlias(true);
+		myPaint.setTextAlign(Paint.Align.CENTER);
+		myPaint.setFakeBoldText(true);
+		myPaint.setTextSize(30);
+	}
+	
+	private void setContent(){
+		if(!valuesSet)
+			setValues();
+			
+		if(!initialBitmapSet)
+			setInitialBitmap();
+			
+		if(!rotatedBitmapSet)
+			setRotatedBitmap();
 		
-		textPaint = new Paint();
-		textPaint.setAntiAlias(true);
-		textPaint.setTextAlign(Paint.Align.CENTER);
-		textPaint.setFakeBoldText(true);
-		textPaint.setTextSize(30);
-		
+	}
+	
+	private void setValues(){
 		int mWidth = this.getWidth() - this.getPaddingLeft() - getPaddingRight();
 		int mHeight = this.getHeight() - this.getPaddingTop() - this.getPaddingBottom();
-
 		size = Math.min(mWidth, mHeight);
 		
-		
-		canvasBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-		emptyCanvasBitmap = Bitmap.createBitmap(canvasBitmap.getWidth(), canvasBitmap.getHeight(), canvasBitmap.getConfig());
-		textBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-		emptyTextBitmap = Bitmap.createBitmap(textBitmap.getWidth(), textBitmap.getHeight(), textBitmap.getConfig());
-		
-		textCanvas = new Canvas(textBitmap);
-		canvasCanvas = new Canvas(canvasBitmap);
-		
-		float textHeight = textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent;
-		r = size/2 - (textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent)/2;
-		this.left = textHeight; //mWidth/2 + this.getPaddingLeft() - r;
-		this.right = size - textHeight;
-		this.top = textHeight; //mHeight/2 + this.getPaddingTop() - r;
-		this.bottom = size - textHeight;
-		
-	}
-	
-	@Override
-	public void draw(Canvas canvas)
-	{
-		if(textBitmap.sameAs(emptyTextBitmap))
-		{
-			Tshow("creating textbitmap",1);
-			textBitmap = CreateWindDirections();
-			super.draw(canvas);
-			
-		}
-		//canvas.drawBitmap(textBitmap, 0, 0, textPaint);
-		
-	}
-	
-	@Override
-	protected void onDraw(Canvas canvas)
-	{
-		Tshow("ondraw", 1);
-			
+		float textHeight = myPaint.getFontMetrics().descent - myPaint.getFontMetrics().ascent;
+		r = (size - textHeight)/2;
+		left = textHeight;
+		right = size - textHeight;
+		top = textHeight;
+		bottom = size - textHeight;
 
-		if(currentAngle == angle)
-			Tshow("angle = currentAngle", 1);
-		if(currentAngle != angle)
-		{
-			Tshow("rotating", 1);
-			rotateText();
-		}
-			
-		/*Runtime runtime = Runtime.getRuntime();
-		long usedMemInMB=(runtime.totalMemory() - runtime.freeMemory()) / 1048576L;
-		long maxHeapSizeInMB=runtime.maxMemory() / 1048576L;
-		long availHeapSizeInMB = maxHeapSizeInMB - usedMemInMB;
-		Tshow("Out of memory\nusedMB: " + usedMemInMB + "\nmaxMB: " + maxHeapSizeInMB + "\navailMB: " + availHeapSizeInMB, 1);
-		*/
-		canvas.drawBitmap(canvasBitmap, this.getPaddingLeft(), this.getPaddingTop(), null);
-		//textBitmap.recycle();
-	}
-	
-	public void rotateText()
-	{
-		Tshow("angle: " + angle +"\ncurrentAngle: " + currentAngle, 1);	
-		currentAngle = angle;
-		canvasCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-		canvasCanvas.save();
-		canvasCanvas.rotate(angle, size/2, size/2);
-		canvasCanvas.drawBitmap(textBitmap, 0, 0, textPaint);
-		canvasCanvas.restore();
-		canvasCanvas.drawBitmap(textBitmap, 0, 0, textPaint);
-	}
-	
-	private Bitmap CreateWindDirections()
-	{
-		textPaint.setColor(Color.GREEN);
-        textPaint.setTextSize(30);
+		initialBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+		rotatedBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 		
+		valuesSet = true;
+	}
+		
+	private void setInitialBitmap(){
+		myPaint.setColor(Color.GREEN);
+        myPaint.setTextSize(30);
+
 		String[] compassPoints = new String[]{">N<", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
         float degreesPerSegment = 360 / (float)compassPoints.length;
 		float dNorthStart = 270 - degreesPerSegment / 2;
-		
+
 		Path p = new Path();
+		Canvas canvas = new Canvas(initialBitmap);
         for (int i = 0; i < compassPoints.length; i++) {
             if (i == 1)
-                textPaint.setColor(Color.BLACK);
+                myPaint.setColor(Color.BLACK);
             p.addArc(left, top, right, bottom, (dNorthStart + ( i * degreesPerSegment)), degreesPerSegment);
-			textCanvas.drawTextOnPath(compassPoints[i], p, 0.0f, -1.0f, textPaint);
+			canvas.drawTextOnPath(compassPoints[i], p, 0.0f, -1.0f, myPaint);
             p.reset();
         }
 		
-		return textBitmap;
+		initialBitmapSet = true;
+	}
+	
+	private void setRotatedBitmap(){
+		if(!initialBitmapSet){
+			return;
+		} else {
+			if(angle.equals(currentAngle) && !rotatedBitmapSet){
+				rotatedBitmap = initialBitmap.copy(initialBitmap.getConfig(), true);
+			} else if(angle.equals(0.0f) && !angle.equals(currentAngle)){
+				rotatedBitmap = initialBitmap.copy(initialBitmap.getConfig(), true);
+				currentAngle = angle;
+			} else if(angle != currentAngle){
+				Canvas canvas = new Canvas(rotatedBitmap);
+				canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+				canvas.save();
+				canvas.rotate(angle, size/2, size/2); 
+				canvas.drawBitmap(initialBitmap, 0, 0, null);
+				canvas.restore();
+				currentAngle = angle;
+			}
+			rotatedBitmapSet = true;
+		}
 	}
 }
